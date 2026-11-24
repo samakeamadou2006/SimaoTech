@@ -1,0 +1,39 @@
+{
+  "name": "simaotech",
+  "version": "1.0.0",
+  "description": "SimaoTech - logiciel integre de gestion commerciale mono-boutique (PWA, Express, PostgreSQL/Supabase)",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node backend/serveur.js",
+    "dev": "node --watch backend/serveur.js",
+    "test": "node --test --test-force-exit tests/unitaires/*.test.js",
+    "test:integration": "node --test --test-force-exit --test-concurrency=1 tests/integration/metier.test.js tests/integration/utilisateurs.test.js tests/integration/catalogue.test.js tests/integration/operations.test.js",
+    "db:migrer": "node base_de_donnees/migrer.js",
+    "db:verifier": "node base_de_donnees/verifier.js",
+    "proprietaire": "node backend/scripts/creer_proprietaire.js"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.2",
+    "bootstrap": "^5.3.3",
+    "chart.js": "^4.4.6",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "decimal.js": "^10.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.1",
+    "pino": "^9.5.0",
+    "pino-http": "^10.3.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "embedded-postgres": "^18.6.0-beta.19"
+  }
+}

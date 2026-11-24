@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Categories | SimaoTech</title>
+    <meta name="theme-color" content="#1155cc" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="menu-lateral" id="menu-lateral" aria-label="Navigation principale"></aside>
+      <div class="voile" id="voile-menu"></div>
+
+      <div class="contenu">
+        <header class="barre-haut">
+          <div class="d-flex align-items-center gap-3">
+            <button type="button" class="bouton-menu" id="bouton-menu" aria-label="Ouvrir le menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div>
+              <p class="barre-haut__titre">Categories</p>
+              <p class="texte-petit texte-doux mb-0" id="role-utilisateur">-</p>
+            </div>
+          </div>
+
+          <div class="barre-haut__actions">
+            <span class="pastille" id="pastille-reseau" aria-live="polite">Verification...</span>
+            <div class="d-flex align-items-center gap-2" id="zone-utilisateur"></div>
+            <button type="button" class="btn btn-st-contour btn-sm" id="bouton-deconnexion">Deconnexion</button>
+          </div>
+        </header>
+
+        <main class="zone">
+          <div id="message-categories" class="message" hidden role="alert" aria-live="polite"></div>
+
+          <section class="bloc">
+            <div class="bloc__entete bloc__entete--outils">
+              <div>
+                <h2 class="bloc__titre">Categories du catalogue</h2>
+                <p class="texte-petit texte-doux mb-0">
+                  Une categorie utilisee par des produits ne peut pas etre supprimee.
+                </p>
+              </div>
+              <div class="barre-outils">
+                <input
+                  type="search"
+                  class="form-control form-control-sm"
+                  id="recherche-categories"
+                  placeholder="Nom ou code"
+                  aria-label="Rechercher une categorie"
+                />
+                <select class="form-select form-select-sm" id="filtre-actif-categorie" aria-label="Filtrer par statut">
+                  <option value="">Tous les statuts</option>
+                  <option value="true">Actives</option>
+                  <option value="false">Inactives</option>
+                </select>
+                <button type="button" class="btn btn-st btn-sm" id="bouton-nouvelle-categorie" hidden>
+                  Nouvelle categorie
+                </button>
+              </div>
+            </div>
+
+            <div class="bloc__corps p-0">
+              <div class="table-responsive">
+                <table class="tableau">
+                  <thead>
+                    <tr>
+                      <th scope="col">Categorie</th>
+                      <th scope="col">Code</th>
+                      <th scope="col" class="text-end">Produits</th>
+                      <th scope="col">Statut</th>
+                      <th scope="col" class="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="corps-categories">
+                    <tr>
+                      <td colspan="5" class="vide">Chargement...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="pied-tableau">
+                <span class="texte-petit texte-doux" id="resume-pagination">-</span>
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-st-contour btn-sm" id="bouton-page-precedente">
+                    Precedent
+                  </button>
+                  <button type="button" class="btn btn-st-contour btn-sm" id="bouton-page-suivante">
+                    Suivant
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modal-categorie" tabindex="-1" aria-labelledby="titre-modal-categorie" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="formulaire-categorie" novalidate>
+            <div class="modal-header">
+              <h2 class="modal-title fs-5" id="titre-modal-categorie">Nouvelle categorie</h2>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+              <div id="message-formulaire-categorie" class="message" hidden role="alert"></div>
+              <input type="hidden" id="categorie-id" />
+
+              <div class="champ">
+                <label for="nom-categorie">Nom</label>
+                <input type="text" class="form-control" id="nom-categorie" maxlength="120" required />
+              </div>
+              <div class="champ">
+                <label for="code-categorie">Code (facultatif)</label>
+                <input type="text" class="form-control" id="code-categorie" maxlength="40" />
+                <p class="texte-petit texte-doux mb-0">
+                  Genere a partir du nom si laisse vide. Exemple : BOISSONS.
+                </p>
+              </div>
+              <div class="champ">
+                <label for="description-categorie">Description (facultatif)</label>
+                <textarea class="form-control" id="description-categorie" rows="2" maxlength="1000"></textarea>
+              </div>
+              <div class="champ form-check">
+                <input class="form-check-input" type="checkbox" id="actif-categorie" checked />
+                <label class="form-check-label" for="actif-categorie">Categorie active</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-st-contour" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-st" id="bouton-enregistrer-categorie">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modal-confirmation" tabindex="-1" aria-labelledby="titre-confirmation" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="titre-confirmation">Confirmation</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-0" id="confirmation-texte">-</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-st-contour" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-danger" id="confirmation-valider">Confirmer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/js/categories.js"></script>
+    <script type="module" src="/js/pwa.js"></script>
+  </body>
+</html>

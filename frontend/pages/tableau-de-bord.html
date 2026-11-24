@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Tableau de bord | SimaoTech</title>
+    <meta name="theme-color" content="#1155cc" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="menu-lateral" id="menu-lateral" aria-label="Navigation principale"></aside>
+      <div class="voile" id="voile-menu"></div>
+
+      <div class="contenu">
+        <header class="barre-haut">
+          <div class="d-flex align-items-center gap-3">
+            <button type="button" class="bouton-menu" id="bouton-menu" aria-label="Ouvrir le menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div>
+              <p class="barre-haut__titre" id="salutation">Tableau de bord</p>
+              <p class="texte-petit texte-doux mb-0" id="role-utilisateur">-</p>
+            </div>
+          </div>
+
+          <div class="barre-haut__actions">
+            <span class="pastille" id="pastille-reseau" aria-live="polite">Verification...</span>
+            <div class="d-flex align-items-center gap-2" id="zone-utilisateur"></div>
+            <button type="button" class="btn btn-st-contour btn-sm" id="bouton-deconnexion">Deconnexion</button>
+          </div>
+        </header>
+
+        <main class="zone">
+          <div id="message-tableau-de-bord" class="message" hidden role="alert"></div>
+
+          <div id="bandeau-mise-a-jour" class="message message--info" hidden>
+            Une nouvelle version de SimaoTech est disponible.
+            <button type="button" class="btn btn-st btn-sm ms-2" id="bouton-recharger">Mettre a jour</button>
+          </div>
+
+          <section class="grille-stats" aria-label="Etat de la mise en service">
+            <article class="carte-stat carte-stat--accent">
+              <span class="carte-stat__libelle">Etat de la base</span>
+              <span class="carte-stat__valeur" id="etat-base">-</span>
+              <span class="carte-stat__detail" id="etat-latence">-</span>
+            </article>
+            <article class="carte-stat">
+              <span class="carte-stat__libelle">Migrations</span>
+              <span class="carte-stat__valeur" id="etat-migrations">-</span>
+              <span class="carte-stat__detail">Derniere : <span id="derniere-migration">-</span></span>
+            </article>
+            <article class="carte-stat">
+              <span class="carte-stat__libelle">Authentification</span>
+              <span class="carte-stat__valeur" id="etat-auth">-</span>
+              <span class="carte-stat__detail" id="nombre-permissions">-</span>
+            </article>
+            <article class="carte-stat">
+              <span class="carte-stat__libelle">Application</span>
+              <span class="carte-stat__valeur" id="etat-pwa">-</span>
+              <span class="carte-stat__detail">Environnement : <span id="etat-environnement">-</span></span>
+            </article>
+          </section>
+
+          <section class="grille-stats" aria-label="Indicateurs commerciaux">
+            <article class="carte-stat carte-stat--accent"><span class="carte-stat__libelle">CA du jour</span><span class="carte-stat__valeur" id="indicateur-ca">-</span></article>
+            <article class="carte-stat"><span class="carte-stat__libelle">Benefice du jour</span><span class="carte-stat__valeur" id="indicateur-benefice">-</span></article>
+            <article class="carte-stat"><span class="carte-stat__libelle">Alertes stock</span><span class="carte-stat__valeur" id="indicateur-stocks">-</span></article>
+            <article class="carte-stat"><span class="carte-stat__libelle">Ventes validees</span><span class="carte-stat__valeur" id="indicateur-ventes">-</span></article>
+          </section>
+
+          <section class="bloc">
+            <div class="bloc__entete">
+              <h2 class="bloc__titre">Etat du systeme</h2>
+              <span class="pastille" id="pastille-base">Verification...</span>
+            </div>
+            <div class="bloc__corps">
+              <div id="avertissements"></div>
+              <p class="texte-doux mb-0">Cet ecran affiche uniquement des informations verifiees aupres du serveur.</p>
+            </div>
+          </section>
+
+          <section class="bloc">
+            <div class="bloc__entete">
+              <h2 class="bloc__titre">Perimetre fonctionnel</h2>
+              <span class="texte-petit texte-doux">Feuille de route de livraison</span>
+            </div>
+            <div class="bloc__corps p-0">
+              <div class="table-responsive">
+                <table class="tableau">
+                  <thead>
+                    <tr>
+                      <th scope="col">Module</th>
+                      <th scope="col">Regle metier cle</th>
+                      <th scope="col">Etat</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Authentification et permissions</td>
+                      <td>Roles, permissions, comptes desactivables, journal de connexion</td>
+                      <td><span class="pastille pastille--succes">Livree</span></td>
+                    </tr>
+                    <tr>
+                      <td>Produits et categories</td>
+                      <td>CMP calcule, prix de reference reserve au proprietaire</td>
+                      <td><span class="pastille pastille--succes">Livree</span></td>
+                    </tr>
+                    <tr>
+                      <td>Approvisionnements</td>
+                      <td>Reductions fournisseurs deduites du cout d'acquisition</td>
+                      <td><span class="pastille pastille--succes">Livree</span></td>
+                    </tr>
+                    <tr>
+                      <td>Caisse et ventes</td>
+                      <td>Interdiction de vente sous le CMP, paiements exacts</td>
+                      <td><span class="pastille pastille--succes">Livree</span></td>
+                    </tr>
+                    <tr>
+                      <td>Depenses et annulations</td>
+                      <td>Validation par le proprietaire, historique conserve</td>
+                      <td><span class="pastille pastille--succes">Livree</span></td>
+                    </tr>
+                    <tr>
+                      <td>Hors ligne et synchronisation</td>
+                      <td>Idempotence, quotas de stock, anomalies conservees</td>
+                      <td><span class="pastille pastille--succes">Livree</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script type="module" src="/js/tableau-de-bord.js"></script>
+    <script type="module" src="/js/pwa.js"></script>
+  </body>
+</html>

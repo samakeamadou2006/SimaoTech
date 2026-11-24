@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Produits | SimaoTech</title>
+    <meta name="theme-color" content="#1155cc" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="menu-lateral" id="menu-lateral" aria-label="Navigation principale"></aside>
+      <div class="voile" id="voile-menu"></div>
+
+      <div class="contenu">
+        <header class="barre-haut">
+          <div class="d-flex align-items-center gap-3">
+            <button type="button" class="bouton-menu" id="bouton-menu" aria-label="Ouvrir le menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div>
+              <p class="barre-haut__titre">Produits</p>
+              <p class="texte-petit texte-doux mb-0" id="role-utilisateur">-</p>
+            </div>
+          </div>
+
+          <div class="barre-haut__actions">
+            <span class="pastille" id="pastille-reseau" aria-live="polite">Verification...</span>
+            <div class="d-flex align-items-center gap-2" id="zone-utilisateur"></div>
+            <button type="button" class="btn btn-st-contour btn-sm" id="bouton-deconnexion">Deconnexion</button>
+          </div>
+        </header>
+
+        <main class="zone">
+          <div id="message-produits" class="message" hidden role="alert" aria-live="polite"></div>
+
+          <section class="bloc" id="panneau-acces-refuse" hidden>
+            <div class="bloc__corps">
+              <h2 class="bloc__titre mb-2">Acces non autorise</h2>
+              <p class="texte-doux">
+                Votre compte ne dispose pas de la permission de consulter le catalogue.
+                Contactez le proprietaire de la boutique.
+              </p>
+              <a href="/pages/tableau-de-bord.html" class="btn btn-st">Retour au tableau de bord</a>
+            </div>
+          </section>
+
+          <div id="contenu-produits">
+            <section class="grille-stats mb-4" aria-label="Synthese du catalogue">
+              <article class="carte-stat carte-stat--accent">
+                <span class="carte-stat__libelle">Produits</span>
+                <span class="carte-stat__valeur" id="stat-total">-</span>
+                <span class="carte-stat__detail">References actives du catalogue</span>
+              </article>
+              <article class="carte-stat">
+                <span class="carte-stat__libelle">Produits actifs</span>
+                <span class="carte-stat__valeur" id="stat-actifs">-</span>
+                <span class="carte-stat__detail">Disponibles a la vente</span>
+              </article>
+              <article class="carte-stat">
+                <span class="carte-stat__libelle">Stocks faibles</span>
+                <span class="carte-stat__valeur" id="stat-faibles">-</span>
+                <span class="carte-stat__detail">Au seuil d alerte ou en dessous</span>
+              </article>
+              <article class="carte-stat">
+                <span class="carte-stat__libelle">Ruptures</span>
+                <span class="carte-stat__valeur" id="stat-ruptures">-</span>
+                <span class="carte-stat__detail">Quantite disponible nulle</span>
+              </article>
+            </section>
+
+            <section class="bloc">
+              <div class="bloc__entete bloc__entete--outils">
+                <div>
+                  <h2 class="bloc__titre">Catalogue</h2>
+                  <p class="texte-petit texte-doux mb-0">
+                    Le CMP est calcule par les approvisionnements. Le prix de reference est reserve au proprietaire.
+                  </p>
+                </div>
+                <div class="barre-outils">
+                  <input
+                    type="search"
+                    class="form-control form-control-sm"
+                    id="recherche-produits"
+                    placeholder="Nom, reference ou code-barres"
+                    aria-label="Rechercher un produit"
+                  />
+                  <select class="form-select form-select-sm" id="filtre-categorie" aria-label="Filtrer par categorie">
+                    <option value="">Toutes les categories</option>
+                  </select>
+                  <select class="form-select form-select-sm" id="filtre-statut" aria-label="Filtrer par statut">
+                    <option value="">Tous les statuts</option>
+                    <option value="ACTIF">Actifs</option>
+                    <option value="ARCHIVE">Archives</option>
+                  </select>
+                  <select class="form-select form-select-sm" id="filtre-etat-stock" aria-label="Filtrer par etat de stock">
+                    <option value="">Tout le stock</option>
+                    <option value="NORMAL">Stock normal</option>
+                    <option value="FAIBLE">Stock faible</option>
+                    <option value="RUPTURE">Rupture</option>
+                  </select>
+                  <button type="button" class="btn btn-st btn-sm" id="bouton-nouveau-produit" hidden>
+                    Nouveau produit
+                  </button>
+                </div>
+              </div>
+
+              <div class="bloc__corps p-0">
+                <div class="table-responsive">
+                  <table class="tableau">
+                    <thead>
+                      <tr>
+                        <th scope="col">Produit</th>
+                        <th scope="col">Categorie</th>
+                        <th scope="col" class="text-end">Prix</th>
+                        <th scope="col" class="text-end">Stock</th>
+                        <th scope="col">Etat</th>
+                        <th scope="col" class="text-end">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="corps-produits">
+                      <tr>
+                        <td colspan="6" class="vide">Chargement...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="pied-tableau">
+                  <span class="texte-petit texte-doux" id="resume-pagination">-</span>
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-st-contour btn-sm" id="bouton-page-precedente">
+                      Precedent
+                    </button>
+                    <button type="button" class="btn btn-st-contour btn-sm" id="bouton-page-suivante">
+                      Suivant
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Creation / modification d'un produit -->
+    <div class="modal fade" id="modal-produit" tabindex="-1" aria-labelledby="titre-modal-produit" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <form id="formulaire-produit" novalidate>
+            <div class="modal-header">
+              <h2 class="modal-title fs-5" id="titre-modal-produit">Nouveau produit</h2>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+              <div id="message-formulaire-produit" class="message" hidden role="alert"></div>
+              <input type="hidden" id="produit-id" />
+
+              <div class="rangee-champs">
+                <div class="champ">
+                  <label for="reference-produit">Reference</label>
+                  <input type="text" class="form-control" id="reference-produit" maxlength="60" />
+                  <p class="texte-petit texte-doux mb-0" id="aide-reference">
+                    Laissez vide pour une reference automatique. Non modifiable ensuite.
+                  </p>
+                </div>
+                <div class="champ">
+                  <label for="code-barres-produit">Code-barres (facultatif)</label>
+                  <input type="text" class="form-control" id="code-barres-produit" maxlength="64" inputmode="numeric" />
+                </div>
+              </div>
+
+              <div class="champ">
+                <label for="nom-produit">Nom du produit</label>
+                <input type="text" class="form-control" id="nom-produit" maxlength="120" required />
+              </div>
+
+              <div class="rangee-champs">
+                <div class="champ">
+                  <label for="categorie-produit">Categorie</label>
+                  <select class="form-select" id="categorie-produit" required></select>
+                </div>
+                <div class="champ">
+                  <label for="seuil-produit">Seuil d alerte (unites)</label>
+                  <input type="number" class="form-control" id="seuil-produit" min="0" step="1" value="0" />
+                </div>
+              </div>
+
+              <div class="champ" id="champ-prix-initial">
+                <label for="prix-produit">Prix de vente de reference (FCFA)</label>
+                <input type="number" class="form-control" id="prix-produit" min="0" step="1" value="0" />
+                <p class="texte-petit texte-doux mb-0" id="aide-prix-produit">
+                  Seul le proprietaire peut fixer un prix. Sans prix, le produit reste a 0 FCFA.
+                </p>
+              </div>
+
+              <div class="champ">
+                <label for="description-produit">Description (facultatif)</label>
+                <textarea class="form-control" id="description-produit" rows="2" maxlength="1000"></textarea>
+              </div>
+
+              <div class="champ" id="champ-statut-produit">
+                <label for="statut-produit">Statut</label>
+                <select class="form-select" id="statut-produit">
+                  <option value="ACTIF">Actif</option>
+                  <option value="ARCHIVE">Archive</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-st-contour" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-st" id="bouton-enregistrer-produit">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Changement de prix -->
+    <div class="modal fade" id="modal-prix" tabindex="-1" aria-labelledby="titre-modal-prix" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="formulaire-prix" novalidate>
+            <div class="modal-header">
+              <div>
+                <h2 class="modal-title fs-5" id="titre-modal-prix">Changer le prix</h2>
+                <p class="texte-petit texte-doux mb-0" id="sous-titre-prix">-</p>
+              </div>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+              <div id="message-prix" class="message" hidden role="alert"></div>
+              <input type="hidden" id="prix-produit-id" />
+
+              <div class="champ">
+                <label for="prix-actuel">Prix actuel</label>
+                <input type="text" class="form-control" id="prix-actuel" readonly />
+              </div>
+              <div class="champ">
+                <label for="nouveau-prix">Nouveau prix (FCFA)</label>
+                <input type="number" class="form-control" id="nouveau-prix" min="0" step="1" required />
+              </div>
+              <div class="champ">
+                <label for="motif-prix">Motif du changement</label>
+                <input type="text" class="form-control" id="motif-prix" maxlength="200" required />
+                <p class="texte-petit texte-doux mb-0">
+                  Le motif est conserve dans l historique et le journal d audit.
+                </p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-st-contour" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-st" id="bouton-enregistrer-prix">Enregistrer le prix</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historique des prix -->
+    <div class="modal fade" id="modal-historique" tabindex="-1" aria-labelledby="titre-modal-historique" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <h2 class="modal-title fs-5" id="titre-modal-historique">Historique des prix</h2>
+              <p class="texte-petit texte-doux mb-0" id="sous-titre-historique">-</p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body p-0">
+            <div id="message-historique" class="message m-3" hidden role="alert"></div>
+            <div class="table-responsive">
+              <table class="tableau">
+                <thead>
+                  <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col" class="text-end">Ancien prix</th>
+                    <th scope="col" class="text-end">Nouveau prix</th>
+                    <th scope="col">Motif</th>
+                    <th scope="col">Auteur</th>
+                  </tr>
+                </thead>
+                <tbody id="corps-historique">
+                  <tr>
+                    <td colspan="5" class="vide">Chargement...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation d'action sensible -->
+    <div class="modal fade" id="modal-confirmation" tabindex="-1" aria-labelledby="titre-confirmation" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="titre-confirmation">Confirmation</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-0" id="confirmation-texte">-</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-st-contour" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-danger" id="confirmation-valider">Confirmer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/js/produits.js"></script>
+    <script type="module" src="/js/pwa.js"></script>
+  </body>
+</html>

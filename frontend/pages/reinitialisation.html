@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Reinitialiser le mot de passe | SimaoTech</title>
+    <meta name="theme-color" content="#1155cc" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <main class="page-centree">
+      <div class="page-centree__carte">
+        <div class="connexion__marque mb-4">
+          <img src="/images/logo.svg" alt="Logo SimaoTech" width="44" height="44" />
+          <span>SimaoTech</span>
+        </div>
+
+        <h1 class="h4 mb-2">Reinitialisation du mot de passe</h1>
+        <p class="texte-doux" id="explication">
+          Choisissez un nouveau mot de passe pour votre compte.
+        </p>
+
+        <div id="message-reinitialisation" class="message" hidden role="alert" aria-live="polite"></div>
+
+        <form id="formulaire-reinitialisation" novalidate hidden>
+          <div class="champ">
+            <label for="nouveau-mot-de-passe">Nouveau mot de passe</label>
+            <input
+              type="password"
+              class="form-control"
+              id="nouveau-mot-de-passe"
+              autocomplete="new-password"
+              minlength="10"
+              required
+            />
+            <p class="texte-petit texte-doux mb-0">
+              Au moins 10 caracteres, avec au moins une lettre et un chiffre.
+            </p>
+          </div>
+          <div class="champ">
+            <label for="confirmation-mot-de-passe">Confirmer le mot de passe</label>
+            <input
+              type="password"
+              class="form-control"
+              id="confirmation-mot-de-passe"
+              autocomplete="new-password"
+              minlength="10"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-st w-100" id="bouton-reinitialiser">
+            Enregistrer le nouveau mot de passe
+          </button>
+        </form>
+
+        <div id="zone-succes" hidden>
+          <div class="message message--succes">
+            Votre mot de passe a ete modifie. Vous pouvez maintenant vous connecter.
+          </div>
+          <a href="/pages/connexion.html" class="btn btn-st w-100">Aller a la connexion</a>
+        </div>
+
+        <p class="texte-petit texte-doux mt-4 mb-0">
+          <a href="/pages/connexion.html">Retour a la connexion</a>
+        </p>
+      </div>
+    </main>
+
+    <script type="module" src="/js/reinitialisation.js"></script>
+    <script type="module" src="/js/pwa.js"></script>
+  </body>
+</html>

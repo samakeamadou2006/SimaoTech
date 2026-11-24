@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Mon compte | SimaoTech</title>
+    <meta name="theme-color" content="#1155cc" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="menu-lateral" id="menu-lateral" aria-label="Navigation principale"></aside>
+      <div class="voile" id="voile-menu"></div>
+
+      <div class="contenu">
+        <header class="barre-haut">
+          <div class="d-flex align-items-center gap-3">
+            <button type="button" class="bouton-menu" id="bouton-menu" aria-label="Ouvrir le menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div>
+              <p class="barre-haut__titre">Mon compte</p>
+              <p class="texte-petit texte-doux mb-0" id="role-utilisateur">-</p>
+            </div>
+          </div>
+
+          <div class="barre-haut__actions">
+            <span class="pastille" id="pastille-reseau" aria-live="polite">Verification...</span>
+            <div class="d-flex align-items-center gap-2" id="zone-utilisateur"></div>
+            <button type="button" class="btn btn-st-contour btn-sm" id="bouton-deconnexion">Deconnexion</button>
+          </div>
+        </header>
+
+        <main class="zone">
+          <div id="message-compte" class="message" hidden role="alert" aria-live="polite"></div>
+
+          <div class="grille-compte">
+            <section class="bloc">
+              <div class="bloc__entete">
+                <h2 class="bloc__titre">Identite</h2>
+              </div>
+              <div class="bloc__corps">
+                <div class="cellule-personne cellule-personne--large">
+                  <span class="avatar" id="avatar-compte">?</span>
+                  <div>
+                    <strong id="nom-compte">-</strong>
+                    <div class="texte-petit texte-doux" id="email-compte">-</div>
+                    <div class="texte-petit texte-doux" id="telephone-compte">-</div>
+                  </div>
+                </div>
+                <p class="texte-petit texte-doux mt-3 mb-0">
+                  Votre identite est geree par le proprietaire. Contactez-le pour toute
+                  modification de nom, de telephone ou de role.
+                </p>
+              </div>
+            </section>
+
+            <section class="bloc">
+              <div class="bloc__entete">
+                <div>
+                  <h2 class="bloc__titre">Mot de passe</h2>
+                  <p class="texte-petit texte-doux mb-0" id="explication-mot-de-passe">
+                    Choisissez un mot de passe robuste et unique.
+                  </p>
+                </div>
+              </div>
+              <div class="bloc__corps">
+                <form id="formulaire-mot-de-passe" novalidate>
+                  <div class="champ">
+                    <label for="mot-de-passe-actuel">Mot de passe actuel</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="mot-de-passe-actuel"
+                      autocomplete="current-password"
+                      required
+                    />
+                  </div>
+                  <div class="champ">
+                    <label for="nouveau-mot-de-passe">Nouveau mot de passe</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="nouveau-mot-de-passe"
+                      autocomplete="new-password"
+                      minlength="10"
+                      required
+                    />
+                    <p class="texte-petit texte-doux mb-0">
+                      Au moins 10 caracteres, avec au moins une lettre et un chiffre.
+                    </p>
+                  </div>
+                  <div class="champ">
+                    <label for="confirmation-mot-de-passe">Confirmer le nouveau mot de passe</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="confirmation-mot-de-passe"
+                      autocomplete="new-password"
+                      minlength="10"
+                      required
+                    />
+                  </div>
+
+                  <div class="d-flex flex-wrap gap-2 mt-3">
+                    <button type="submit" class="btn btn-st" id="bouton-changer-mot-de-passe">
+                      Changer le mot de passe
+                    </button>
+                    <a href="/pages/tableau-de-bord.html" class="btn btn-st-contour" id="lien-retour">
+                      Retour au tableau de bord
+                    </a>
+                  </div>
+                </form>
+              </div>
+            </section>
+          </div>
+
+          <section class="bloc" id="bloc-aide">
+            <div class="bloc__entete">
+              <h2 class="bloc__titre">Mot de passe oublie</h2>
+            </div>
+            <div class="bloc__corps">
+              <p class="texte-doux mb-2">
+                Si vous ne connaissez plus votre mot de passe actuel, demandez au proprietaire
+                de reinitialiser votre compte : un mot de passe temporaire vous sera remis.
+              </p>
+              <p class="texte-petit texte-doux mb-0">
+                Une demande de reinitialisation par e-mail est egalement disponible depuis
+                l ecran de connexion.
+              </p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <script type="module" src="/js/mot-de-passe.js"></script>
+    <script type="module" src="/js/pwa.js"></script>
+  </body>
+</html>

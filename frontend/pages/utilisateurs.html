@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Employes et permissions | SimaoTech</title>
+    <meta name="theme-color" content="#1155cc" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" href="/images/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="/vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="menu-lateral" id="menu-lateral" aria-label="Navigation principale"></aside>
+      <div class="voile" id="voile-menu"></div>
+
+      <div class="contenu">
+        <header class="barre-haut">
+          <div class="d-flex align-items-center gap-3">
+            <button type="button" class="bouton-menu" id="bouton-menu" aria-label="Ouvrir le menu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <div>
+              <p class="barre-haut__titre">Employes et permissions</p>
+              <p class="texte-petit texte-doux mb-0" id="role-utilisateur">-</p>
+            </div>
+          </div>
+
+          <div class="barre-haut__actions">
+            <span class="pastille" id="pastille-reseau" aria-live="polite">Verification...</span>
+            <div class="d-flex align-items-center gap-2" id="zone-utilisateur"></div>
+            <button type="button" class="btn btn-st-contour btn-sm" id="bouton-deconnexion">Deconnexion</button>
+          </div>
+        </header>
+
+        <main class="zone">
+          <div id="message-utilisateurs" class="message" hidden role="alert" aria-live="polite"></div>
+
+          <section class="bloc" id="panneau-acces-refuse" hidden>
+            <div class="bloc__corps">
+              <h2 class="bloc__titre mb-2">Acces reserve au proprietaire</h2>
+              <p class="texte-doux">
+                La gestion des comptes et des permissions est reservee au proprietaire de la
+                boutique. Votre session ne dispose pas de cette permission.
+              </p>
+              <a href="/pages/tableau-de-bord.html" class="btn btn-st">Retour au tableau de bord</a>
+            </div>
+          </section>
+
+          <div id="contenu-utilisateurs">
+            <section class="grille-stats mb-4" aria-label="Synthese des comptes">
+              <article class="carte-stat carte-stat--accent">
+                <span class="carte-stat__libelle">Comptes</span>
+                <span class="carte-stat__valeur" id="stat-total">-</span>
+                <span class="carte-stat__detail">Profils applicatifs actifs et inactifs</span>
+              </article>
+              <article class="carte-stat">
+                <span class="carte-stat__libelle">Comptes actifs</span>
+                <span class="carte-stat__valeur" id="stat-actifs">-</span>
+                <span class="carte-stat__detail">Peuvent se connecter</span>
+              </article>
+              <article class="carte-stat">
+                <span class="carte-stat__libelle">Administrateurs</span>
+                <span class="carte-stat__valeur" id="stat-administrateurs">-</span>
+                <span class="carte-stat__detail">Hors proprietaire</span>
+              </article>
+              <article class="carte-stat">
+                <span class="carte-stat__libelle">Mots de passe a changer</span>
+                <span class="carte-stat__valeur" id="stat-a-changer">-</span>
+                <span class="carte-stat__detail">Connexion limitee tant que non change</span>
+              </article>
+            </section>
+
+            <section class="bloc">
+              <div class="bloc__entete bloc__entete--outils">
+                <div>
+                  <h2 class="bloc__titre">Comptes de la boutique</h2>
+                  <p class="texte-petit texte-doux mb-0">Chaque operation est journalisee.</p>
+                </div>
+                <div class="barre-outils">
+                  <input
+                    type="search"
+                    class="form-control form-control-sm"
+                    id="recherche-utilisateurs"
+                    placeholder="Rechercher un nom ou un e-mail"
+                    aria-label="Rechercher un utilisateur"
+                  />
+                  <select class="form-select form-select-sm" id="filtre-role" aria-label="Filtrer par role">
+                    <option value="">Tous les roles</option>
+                    <option value="PROPRIETAIRE">Proprietaire</option>
+                    <option value="ADMINISTRATEUR">Administrateur</option>
+                    <option value="EMPLOYE">Employe</option>
+                  </select>
+                  <select class="form-select form-select-sm" id="filtre-actif" aria-label="Filtrer par statut">
+                    <option value="">Tous les statuts</option>
+                    <option value="true">Actifs</option>
+                    <option value="false">Inactifs</option>
+                  </select>
+                  <button type="button" class="btn btn-st btn-sm" id="bouton-nouvel-utilisateur">
+                    Nouvel employe
+                  </button>
+                </div>
+              </div>
+
+              <div class="bloc__corps p-0">
+                <div class="table-responsive">
+                  <table class="tableau">
+                    <thead>
+                      <tr>
+                        <th scope="col">Employe</th>
+                        <th scope="col">Role</th>
+                        <th scope="col">Statut</th>
+                        <th scope="col">Derniere connexion</th>
+                        <th scope="col" class="text-end">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="corps-utilisateurs">
+                      <tr>
+                        <td colspan="5" class="vide">Chargement...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="pied-tableau">
+                  <span class="texte-petit texte-doux" id="resume-pagination">-</span>
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-st-contour btn-sm" id="bouton-page-precedente">
+                      Precedent
+                    </button>
+                    <button type="button" class="btn btn-st-contour btn-sm" id="bouton-page-suivante">
+                      Suivant
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Creation / modification -->
+    <div class="modal fade" id="modal-utilisateur" tabindex="-1" aria-labelledby="titre-modal-utilisateur" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="formulaire-utilisateur" novalidate>
+            <div class="modal-header">
+              <h2 class="modal-title fs-5" id="titre-modal-utilisateur">Nouvel employe</h2>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+              <div id="message-formulaire" class="message" hidden role="alert"></div>
+              <input type="hidden" id="utilisateur-id" />
+
+              <div class="champ">
+                <label for="nom-complet">Nom complet</label>
+                <input type="text" class="form-control" id="nom-complet" maxlength="120" required />
+              </div>
+
+              <div class="champ">
+                <label for="email-utilisateur">Adresse e-mail</label>
+                <input type="email" class="form-control" id="email-utilisateur" maxlength="254" required />
+                <p class="texte-petit texte-doux mb-0" id="aide-email">
+                  L adresse sert d identifiant de connexion et ne peut plus etre modifiee ensuite.
+                </p>
+              </div>
+
+              <div class="champ">
+                <label for="telephone-utilisateur">Telephone (facultatif)</label>
+                <input type="tel" class="form-control" id="telephone-utilisateur" maxlength="30" />
+              </div>
+
+              <div class="champ">
+                <label for="role-employe">Role</label>
+                <select class="form-select" id="role-employe" required>
+                  <option value="EMPLOYE">Employe / Vendeur</option>
+                  <option value="ADMINISTRATEUR">Administrateur</option>
+                </select>
+                <p class="texte-petit texte-doux mb-0">
+                  Le role proprietaire ne s attribue que par le script de bootstrap.
+                </p>
+              </div>
+
+              <div class="champ" id="champ-mot-de-passe">
+                <label for="mot-de-passe-initial">Mot de passe initial (facultatif)</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="mot-de-passe-initial"
+                  autocomplete="new-password"
+                  minlength="10"
+                />
+                <p class="texte-petit texte-doux mb-0">
+                  Si vide, un mot de passe temporaire est genere et affiche une seule fois.
+                  L employe devra le changer a sa premiere connexion.
+                </p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-st-contour" data-bs-dismiss="modal">Annuler</button>
+              <button type="submit" class="btn btn-st" id="bouton-enregistrer-utilisateur">
+                Enregistrer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permissions individuelles -->
+    <div class="modal fade" id="modal-permissions" tabindex="-1" aria-labelledby="titre-modal-permissions" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div>
+              <h2 class="modal-title fs-5" id="titre-modal-permissions">Permissions</h2>
+              <p class="texte-petit texte-doux mb-0" id="sous-titre-permissions">-</p>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <div id="message-permissions" class="message" hidden role="alert"></div>
+            <p class="texte-petit texte-doux">
+              Les permissions du role sont appliquees par defaut. Une derogation « Accorder »
+              ajoute une permission, « Retirer » la supprime pour cet employe uniquement.
+            </p>
+            <div id="liste-permissions" class="liste-permissions"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-st-contour" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-st" id="bouton-enregistrer-permissions">
+              Enregistrer les permissions
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Confirmation d'action sensible -->
+    <div class="modal fade" id="modal-confirmation" tabindex="-1" aria-labelledby="titre-confirmation" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="titre-confirmation">Confirmation</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <p class="mb-0" id="confirmation-texte">-</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-st-contour" data-bs-dismiss="modal">Annuler</button>
+            <button type="button" class="btn btn-danger" id="confirmation-valider">Confirmer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Identifiants temporaires -->
+    <div class="modal fade" id="modal-identifiants" tabindex="-1" aria-labelledby="titre-identifiants" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-5" id="titre-identifiants">Identifiants temporaires</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <p class="texte-doux" id="identifiants-avertissement">
+              Communiquez ces identifiants par un canal sur. Ils ne seront plus affiches.
+            </p>
+            <div class="champ">
+              <label for="identifiants-email">Adresse e-mail</label>
+              <input type="text" class="form-control" id="identifiants-email" readonly />
+            </div>
+            <div class="champ">
+              <label for="identifiants-mot-de-passe">Mot de passe temporaire</label>
+              <div class="d-flex gap-2">
+                <input type="text" class="form-control" id="identifiants-mot-de-passe" readonly />
+                <button type="button" class="btn btn-st-contour" id="bouton-copier-mot-de-passe">
+                  Copier
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-st" data-bs-dismiss="modal">J ai compris</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="/js/utilisateurs.js"></script>
+    <script type="module" src="/js/pwa.js"></script>
+  </body>
+</html>

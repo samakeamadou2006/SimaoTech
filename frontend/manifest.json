@@ -1,0 +1,22 @@
+{
+  "name": "SimaoTech - Gestion commerciale",
+  "short_name": "SimaoTech",
+  "description": "Logiciel integre de gestion commerciale de la boutique SimaoTech.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "/pages/tableau-de-bord.html",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f7fb",
+  "theme_color": "#1155cc",
+  "categories": ["business", "productivity", "finance"],
+  "icons": [
+    {
+      "src": "/images/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
