@@ -1,9 +1,5 @@
 /**
- * Tableau de bord - etat de mise en service.
- *
- * Aucune donnee commerciale n'est affichee tant que les modules
- * correspondants ne sont pas livres : cet ecran ne presente que des
- * informations reellement verifiees aupres du serveur.
+ * Tableau de bord - etat de mise en service et indicateurs commerciaux.
  */
 import { api } from './api.js';
 import {

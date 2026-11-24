@@ -17,6 +17,9 @@ au parcours de reprise.
   envoi, afin de conserver la meme cle lors des tentatives suivantes.
 - La mise en file est limitee aux ventes, approvisionnements et depenses. Les
   ajustements de stock et demandes d'annulation ne sont pas rejoues hors ligne.
+- Les listes de reference sont gardees dans `sessionStorage` par compte pour
+  permettre de remplir un formulaire deja ouvert ; elles expirent apres 24 heures.
+  Le cache n'est pas une reservation de stock et ne remplace jamais la validation serveur.
 - La base comporte des contraintes d'unicite sur les cles d'idempotence.
 - `POST /api/synchronisation` enregistre une operation idempotente, mais ne
   rejoue pas lui-meme la mutation metier et ne fournit pas encore un cycle

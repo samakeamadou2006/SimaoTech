@@ -7,7 +7,7 @@
  * - API : jamais mise en cache (les donnees metier doivent rester fraiches).
  * - pages metiers : coque cachee pour consultation apres reconnexion.
  */
-const VERSION = 'simaotech-v1.0.0-phase13';
+const VERSION = 'simaotech-v1.0.0-phase14';
 const CACHE_COQUE = `${VERSION}-coque`;
 const CACHE_VENDOR = `${VERSION}-vendor`;
 
@@ -32,6 +32,7 @@ const COQUE = [
   '/js/produits.js',
   '/js/categories.js',
   '/js/metiers.js',
+  '/js/metiers-calculs.js',
   '/js/stockage_local.js',
   '/js/pwa.js',
   '/images/logo.svg',
@@ -73,7 +74,7 @@ self.addEventListener('fetch', (evenement) => {
 
   const url = new URL(requete.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith('/api/')) return;
+  if (url.pathname === '/api' || url.pathname.startsWith('/api/')) return;
 
   if (url.pathname.startsWith('/vendor/')) {
     evenement.respondWith(
@@ -99,7 +100,11 @@ self.addEventListener('fetch', (evenement) => {
         }
         return reponse;
       } catch {
-        const cache = await caches.match(requete);
+        const cache =
+          (await caches.match(requete)) ??
+          (requete.destination === 'document'
+            ? await caches.match(`${url.origin}${url.pathname}`)
+            : null);
         if (cache) return cache;
         if (requete.mode === 'navigate') {
           const secours = await caches.match('/pages/connexion.html');

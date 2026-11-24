@@ -50,7 +50,15 @@ Ce document conserve la trace des choix pris lors de l'analyse du cahier des cha
 
 **Constat.** Un appareil deconnecte ne peut pas connaitre les changements de cout ou de stock des autres appareils.
 
-**Decision.** Quotas de stock par appareil avec CMP fige, vente locale marquee `EN_ATTENTE_SYNCHRONISATION`, revalidation serveur obligatoire, anomalie conservee sans suppression. Aucune vente hors ligne n'est comptabilisee avant validation.
+**Cible.** Quotas de stock par appareil avec CMP fige, vente locale marquee
+`EN_ATTENTE_SYNCHRONISATION`, revalidation serveur obligatoire et anomalie
+conservee sans suppression. Aucune vente hors ligne ne doit etre comptabilisee
+avant validation.
+
+**Etat actuel.** IndexedDB met en file les ventes, approvisionnements et depenses
+et reutilise leurs cles d'idempotence. Les quotas de stock par appareil ne sont
+pas relies au formulaire de vente et la resolution complete des conflits reste
+a faire. Voir `synchronisation.md`.
 
 ## 8. Role ADMINISTRATEUR
 

@@ -87,8 +87,8 @@
 
           <section class="bloc">
             <div class="bloc__entete">
-              <h2 class="bloc__titre">Perimetre fonctionnel</h2>
-              <span class="texte-petit texte-doux">Feuille de route de livraison</span>
+              <h2 class="bloc__titre">Vue d'ensemble du projet</h2>
+              <span class="texte-petit texte-doux">Fonctions disponibles et reste a finaliser</span>
             </div>
             <div class="bloc__corps p-0">
               <div class="table-responsive">
@@ -96,40 +96,59 @@
                   <thead>
                     <tr>
                       <th scope="col">Module</th>
-                      <th scope="col">Regle metier cle</th>
+                      <th scope="col">Disponible</th>
+                      <th scope="col">A finaliser</th>
                       <th scope="col">Etat</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
                       <td>Authentification et permissions</td>
-                      <td>Roles, permissions, comptes desactivables, journal de connexion</td>
+                      <td>Connexion, comptes, roles et permissions</td>
+                      <td>Recette finale avant production</td>
                       <td><span class="pastille pastille--succes">Livree</span></td>
                     </tr>
                     <tr>
                       <td>Produits et categories</td>
-                      <td>CMP calcule, prix de reference reserve au proprietaire</td>
+                      <td>API et ecrans dedies au catalogue</td>
+                      <td>Ameliorations ergonomiques</td>
                       <td><span class="pastille pastille--succes">Livree</span></td>
                     </tr>
                     <tr>
-                      <td>Approvisionnements</td>
-                      <td>Reductions fournisseurs deduites du cout d'acquisition</td>
-                      <td><span class="pastille pastille--succes">Livree</span></td>
+                      <td>Fournisseurs et approvisionnements</td>
+                      <td>Creation fournisseur, achat et validation</td>
+                      <td>Recherche, modification et suivi detaille</td>
+                      <td><span class="pastille pastille--alerte">Partielle</span></td>
                     </tr>
                     <tr>
-                      <td>Caisse et ventes</td>
-                      <td>Interdiction de vente sous le CMP, paiements exacts</td>
-                      <td><span class="pastille pastille--succes">Livree</span></td>
+                      <td>Stocks et inventaires</td>
+                      <td>Ajustement et saisie/validation d inventaire</td>
+                      <td>Historique filtrable et suivi detaille</td>
+                      <td><span class="pastille pastille--alerte">Partielle</span></td>
+                    </tr>
+                    <tr>
+                      <td>Ventes et paiements</td>
+                      <td>Caisse, calcul du total et paiement simple</td>
+                      <td>Paiements mixtes et affichage des recus</td>
+                      <td><span class="pastille pastille--alerte">Partielle</span></td>
                     </tr>
                     <tr>
                       <td>Depenses et annulations</td>
-                      <td>Validation par le proprietaire, historique conserve</td>
-                      <td><span class="pastille pastille--succes">Livree</span></td>
+                      <td>Creation, validation, demande et decision</td>
+                      <td>Televersement de justificatifs et filtres de suivi</td>
+                      <td><span class="pastille pastille--alerte">Partielle</span></td>
+                    </tr>
+                    <tr>
+                      <td>Tableau de bord et rapports</td>
+                      <td>Indicateurs journaliers et export CSV</td>
+                      <td>Visualisations detaillees et PDF/Excel</td>
+                      <td><span class="pastille pastille--alerte">Partielle</span></td>
                     </tr>
                     <tr>
                       <td>Hors ligne et synchronisation</td>
-                      <td>Idempotence, quotas de stock, anomalies conservees</td>
-                      <td><span class="pastille pastille--succes">Livree</span></td>
+                      <td>File locale pour ventes, achats et depenses</td>
+                      <td>Quotas par appareil et resolution complete des conflits</td>
+                      <td><span class="pastille pastille--alerte">Partielle</span></td>
                     </tr>
                   </tbody>
                 </table>

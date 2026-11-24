@@ -100,7 +100,12 @@ const ENTREES_MENU = [
         href: '/pages/categories.html',
         permission: 'produits.consulter',
       },
-      { id: 'fournisseurs', libelle: 'Fournisseurs', href: '/pages/module.html?module=fournisseurs', permission: 'fournisseurs.gerer' },
+      {
+        id: 'fournisseurs',
+        libelle: 'Fournisseurs',
+        href: '/pages/module.html?module=fournisseurs',
+        permission: ['fournisseurs.gerer', 'approvisionnements.consulter'],
+      },
     ],
   },
   {
@@ -108,9 +113,25 @@ const ENTREES_MENU = [
     liens: [
       { id: 'approvisionnements', libelle: 'Approvisionnements', href: '/pages/module.html?module=approvisionnements', permission: 'approvisionnements.consulter' },
       { id: 'stocks', libelle: 'Stocks', href: '/pages/module.html?module=stocks', permission: 'stocks.consulter' },
-      { id: 'ventes', libelle: 'Ventes', href: '/pages/module.html?module=ventes', permission: 'ventes.creer' },
-      { id: 'depenses', libelle: 'Depenses', href: '/pages/module.html?module=depenses', permission: 'depenses.consulter' },
-      { id: 'annulations', libelle: 'Annulations', href: '/pages/module.html?module=annulations', permission: 'ventes.annuler_demander' },
+      { id: 'inventaires', libelle: 'Inventaires', href: '/pages/module.html?module=inventaires', permission: 'stocks.inventorier' },
+      {
+        id: 'ventes',
+        libelle: 'Ventes',
+        href: '/pages/module.html?module=ventes',
+        permission: ['ventes.consulter_propres', 'ventes.consulter_toutes'],
+      },
+      {
+        id: 'depenses',
+        libelle: 'Depenses',
+        href: '/pages/module.html?module=depenses',
+        permission: ['depenses.consulter', 'depenses.creer'],
+      },
+      {
+        id: 'annulations',
+        libelle: 'Annulations',
+        href: '/pages/module.html?module=annulations',
+        permission: ['ventes.annuler_approuver', 'ventes.annuler_demander'],
+      },
     ],
   },
   {
@@ -136,7 +157,10 @@ const ENTREES_MENU = [
 
 export function aPermission(utilisateur, code) {
   if (!utilisateur) return false;
-  return Boolean(utilisateur.estProprietaire || utilisateur.permissions?.includes(code));
+  const codes = Array.isArray(code) ? code : [code];
+  return Boolean(
+    utilisateur.estProprietaire || codes.some((permission) => utilisateur.permissions?.includes(permission)),
+  );
 }
 
 export function rendreMenu(actif, utilisateur = null) {

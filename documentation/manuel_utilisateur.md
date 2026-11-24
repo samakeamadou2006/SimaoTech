@@ -1,8 +1,8 @@
 # Manuel utilisateur - SimaoTech
 
-Version 1.0 - etat au 18 novembre 2026.
+Version 1.1 - mise a jour le 24 novembre 2026.
 
-> Ce manuel decrit les ecrans disponibles. Les modules en cours de livraison sont signales.
+> Les API valident les regles metier ; certains parcours avances restent a finaliser.
 
 ## 1. Se connecter
 
@@ -62,49 +62,91 @@ cet ecran : le changement est obligatoire avant tout autre acces. Le lien recu p
 
 ## 5. Tableau de bord
 
-Affiche des informations **reelles**, calculees a partir de la base :
+Affiche des informations **reelles**, calculees a partir du serveur :
 
 - etat du systeme (base connectee, migrations appliquees, mode d'authentification, service worker) ;
 - etat du reseau (en ligne / hors ligne) ;
-- role et permissions effectives de l'utilisateur connecte.
+- indicateurs journaliers (chiffre d'affaires, benefice si autorise, alertes de stock et ventes validees) ;
+- role, permissions effectives et vue d'ensemble des fonctions livrees ou a finaliser.
 
-Les indicateurs commerciaux (chiffre d'affaires du jour, de la semaine, du mois, benefice brut, depenses, benefice net, produits les plus vendus, stocks faibles, ruptures) seront actives avec les modules ventes, depenses et rapports. Aucune valeur fictive n'est affichee en attendant.
+Les donnees sont chargees aupres de l'API ; une erreur de chargement est signalee et ne doit pas etre interpretee comme une valeur nulle.
 
-## 6. Regles de vente a connaitre
+## 6. Operations courantes
 
-- Le prix de vente de reference est fixe par le proprietaire.
-- Une reduction est possible dans la limite du benefice : le prix net ne peut **jamais** descendre sous le cout moyen pondere (CMP).
-- Exemple : prix 15 000 FCFA, CMP 12 000 FCFA, reduction 3 000 FCFA -> prix net 12 000 FCFA, benefice 0 : autorise.
-- Une reduction de 3 500 FCFA donnerait 11 500 FCFA : la vente est refusee.
-- Le total des paiements doit etre **exactement** egal au montant de la vente (especes + Mobile Money).
-- Les references Mobile Money (Orange Money, MTN MoMo, Wave) sont saisies manuellement et conservees.
+### Fournisseurs et achats
+
+1. Creer un fournisseur avec un code unique et son nom.
+2. Dans **Approvisionnements**, choisir le fournisseur, ajouter les produits, quantites,
+   prix d'achat et reductions eventuelles.
+3. Enregistrer le brouillon puis le valider depuis la liste. La validation met a jour le
+   stock et le cout moyen pondere (CMP).
+
+### Stocks et inventaires
+
+- **Stocks** affiche les quantites disponibles ; un ajustement exige un motif et accepte
+  une quantite positive (ajout) ou negative (retrait).
+- **Inventaires** : creer un inventaire, saisir les quantites comptees puis valider les
+  ecarts. Les validations restent soumises aux permissions du compte.
+
+### Caisse et ventes
+
+1. Ajouter les articles et leurs quantites ; le total est estime a partir du catalogue.
+2. Si vous avez la permission de reduction, saisir une reduction par ligne.
+3. Choisir un moyen de paiement. Pour Orange Money, MTN MoMo ou Wave, fournir la
+   reference de transaction.
+4. Enregistrer la vente. Le serveur recalcule et controle le montant final, le stock,
+   le CMP et les paiements.
+
+L'interface actuelle accepte un seul moyen de paiement par vente. Les paiements mixtes
+et l'affichage/edition des recus restent a finaliser. Le prix de reference est fixe par
+le proprietaire ; une vente sous le CMP est refusee.
+
+### Depenses et annulations
+
+- Une depense se cree avec categorie, montant et description ; elle attend ensuite la
+  validation ou le rejet d'un compte autorise. Le justificatif est actuellement un lien,
+  pas un televersement de fichier.
+- Une annulation se demande pour une vente validee avec un motif. Un proprietaire ou un
+  administrateur autorise peut l'approuver ou la rejeter. Une approbation conserve la
+  vente d'origine et restitue le stock.
+
+### Rapports
+
+Choisir les dates de debut et de fin, consulter la synthese, puis exporter en CSV.
+Les graphiques detailles et exports PDF/Excel ne sont pas encore disponibles.
 
 ## 7. Annulations
 
-Un employe ne supprime jamais une vente. Il en fait la demande avec un motif. Le proprietaire (ou un administrateur autorise) approuve ou refuse. Si l'annulation est approuvee :
+Une annulation approuvee :
 
 - la vente d'origine est conservee et marquee **ANNULEE** ;
 - les quantites retournent en stock ;
 - le chiffre d'affaires et les benefices sont recalcules ;
 - l'historique complet (demandeur, decideur, dates, motif) reste consultable.
 
-## 8. Depenses
+## 8. Regles metier des ventes
 
-Les depenses sont enregistrees avec une categorie (loyer, electricite, eau, internet, transport, salaires, entretien, fournitures, divers), un montant, une date, une description et, si possible, un justificatif.
-
-Elles passent par les statuts : **en attente**, **validee**, **rejetee**, **annulee**. Seules les depenses validees sont deduites du benefice net de gestion.
+- Le prix de vente de reference est fixe par le proprietaire.
+- Une reduction est possible dans la limite du benefice : le prix net ne peut **jamais**
+  descendre sous le cout moyen pondere (CMP).
+- Exemple : prix 15 000 FCFA, CMP 12 000 FCFA, reduction 3 000 FCFA -> prix net
+  12 000 FCFA, benefice 0 : autorise. Une reduction de 3 500 FCFA est refusee.
+- Le montant du paiement doit etre exactement egal au montant net calcule par le serveur.
+- Les references Mobile Money sont saisies manuellement ; aucune confirmation operateur
+  n'est effectuee.
 
 ## 9. Hors connexion
 
 L'application peut etre installee sur une tablette ou un telephone (menu du navigateur : **Installer l'application**).
 
-Hors connexion :
+Le mode hors connexion est partiel. Si le module est deja ouvert et que ses listes ont
+ete chargees dans la session du navigateur, les formulaires peuvent mettre en attente
+des ventes, achats ou depenses. Les listes locales expirent apres 24 heures. Les donnees
+ne sont pas une reservation de stock et une vente n'est pas confirmee avant le retour au
+serveur. Celui-ci revalide l'operation ; un echec peut la laisser en erreur dans la file.
 
-- le catalogue et les quotas disponibles restent consultables ;
-- les ventes sont enregistrees localement avec la mention **En attente de synchronisation** ;
-- aucune vente locale n'est consideree comme definitivement validee.
-
-Au retour du reseau, les operations sont transmises au serveur, reverifiees (stock, cout, paiements, permissions), puis confirmees ou placees en anomalie. Une anomalie est conservee et doit etre traitee par le proprietaire.
+Les quotas de stock par appareil et l'interface complete de correction/reprise des erreurs
+ne sont pas encore disponibles. Ne pas utiliser ce mode comme garantie de vente hors ligne.
 
 ## 10. Questions frequentes
 
@@ -117,8 +159,9 @@ La reduction a ramene le prix net au niveau du cout : la vente est autorisee mai
 **Un vendeur ne voit pas les benefices.**
 C'est normal : les benefices globaux sont reserves aux porteurs de la permission `benefices.consulter`.
 
-**La vente hors ligne n'apparait pas dans les totaux.**
-Elle n'est comptabilisee qu'apres validation serveur. Verifier l'indicateur de synchronisation.
+**Une operation hors ligne est en erreur.**
+Reconnecter l'application et communiquer le message affiche au proprietaire. La correction
+et la remise en file depuis l'interface restent a finaliser.
 
 ## 11. Assistance
 

@@ -2,11 +2,40 @@
 
 Logiciel integre de gestion commerciale pour la boutique **SimaoTech** (mono-boutique, XOF, interface francaise).
 
-Application **PWA** : frontend HTML5/CSS3/JavaScript + Bootstrap 5, API REST **Node.js/Express**, base **PostgreSQL (Supabase)**, authentification **Supabase Auth**, stockage local **IndexedDB** et synchronisation multi-appareils.
+Application **PWA** : frontend HTML5/CSS3/JavaScript + Bootstrap 5, API REST **Node.js/Express**, base **PostgreSQL (Supabase)**, authentification **Supabase Auth** et file locale **IndexedDB** avec reprise partielle en ligne.
 
-> Etat actuel : le socle, le catalogue, les API metier et leurs tests d'integration sont presents. **Le projet n'est pas encore pret pour la production** : les ecrans des modules 5 a 11 restent generiques, et le mode hors connexion/synchronisation ne couvre qu'un sous-ensemble des operations.
+> Etat actuel : le socle, le catalogue, les API metier et les formulaires principaux sont presents. **Le projet n'est pas encore pret pour la production** : certains parcours utilisateur restent incomplets et la synchronisation hors connexion est partielle.
 
 ---
+
+## Vue d'ensemble du projet
+
+```mermaid
+flowchart LR
+  utilisateur[Gerant ou employe] --> pwa[Interface web / PWA]
+  pwa -->|HTTPS et API JSON| api[API REST Express]
+  pwa <-->|file locale limitee| idb[(IndexedDB)]
+  api -->|authentification et jetons| auth[Supabase Auth]
+  api -->|requetes metier| db[(PostgreSQL / Supabase)]
+  idb -->|reprise en ligne : ventes, achats, depenses| api
+  db --> tables[(Donnees, contraintes, RLS et fonctions SQL)]
+```
+
+SimaoTech aide une boutique mono-site a gerer ses utilisateurs et permissions,
+son catalogue, ses achats, ses stocks, ses ventes, ses depenses et ses rapports.
+Les regles sensibles (calcul du cout moyen pondere, paiements et stock) sont
+validees cote serveur et base de donnees.
+
+| Disponible | A finaliser |
+|---|---|
+| Authentification, comptes et permissions | Interfaces metier conviviales pour la plupart des operations |
+| Catalogue produits/categories et ecran dedie | Parcours complet de caisse et visualisations detaillees |
+| API metier, validations et formulaires pour stocks, achats, ventes et depenses | Recus et paiements mixtes en caisse, filtres avances, exports PDF/Excel et conflits hors ligne |
+| Tableau de bord avec indicateurs et export CSV | Quotas de stock par appareil et synchronisation hors ligne complete |
+
+Les operations courantes disposent de formulaires structures. Les options
+avancees (paiements mixtes, pieces jointes, visualisations et gestion complete
+hors ligne) restent a terminer ; ne pas considerer l'application prete pour la production.
 
 ## 1. Demarrage rapide
 
@@ -48,11 +77,12 @@ Un PostgreSQL isole est initialise dans `.postgres-local/` (port 55432) et toute
 ### Tests
 
 ```bash
-npm test                 # arithmetique financiere (16 tests)
-npm run test:integration # PostgreSQL embarque, 15 scenarios metier + 12 scenarios comptes
+npm test
+npm run test:integration
 ```
 
-Resultat attendu : `pass 16 / fail 0` et `pass 27 / fail 0`.
+La suite d'integration demarre un PostgreSQL embarque et applique les migrations
+sur une base isolee.
 
 ---
 
@@ -63,16 +93,17 @@ SimaoTech/
   frontend/
     pages/            connexion, tableau-de-bord, utilisateurs, catalogue et module metier partage
     css/              styles.css (identite bleu / blanc / noir)
-    js/               api, session, ui, metiers, stockage local, connexion, tableau-de-bord,
-                      utilisateurs, mot-de-passe, reinitialisation, pwa
+    js/               api, session, ui, metiers et calculs de vente, stockage local,
+                      connexion, tableau-de-bord, utilisateurs, mot-de-passe,
+                      reinitialisation, pwa
     images/           logo.svg
     manifest.json     PWA
     service-worker.js coque applicative hors ligne
   backend/
     configuration/    environnement, journal, base de donnees, supabase
-    routes/           index, sante, authentification, utilisateurs
+    routes/           index, sante, authentification, utilisateurs, catalogue, metiers
     controleurs/      logique HTTP
-    services/         logique metier (authentification, comptes, utilisateurs)
+    services/         logique metier (authentification, comptes, utilisateurs, operations)
     modeles/          requetes SQL parametrees
     middlewares/      authentification, autorisation, erreurs, limitation
     validateurs/      validation des entrees
@@ -84,7 +115,7 @@ SimaoTech/
     migrer.js         application idempotente des migrations
   tests/
     unitaires/        arithmetique financiere
-    integration/      scenarios metier et comptes sur PostgreSQL reel
+    integration/      scenarios HTTP sur PostgreSQL embarque
   documentation/
     architecture.md, base_de_donnees.md, api.md, securite.md,
     synchronisation.md, installation.md, manuel_utilisateur.md, decisions.md
@@ -118,18 +149,18 @@ Regle de nommage : **francais, sans accents, snake_case** pour les tables, colon
 | 1 | Initialisation (Node, Express, Bootstrap, PWA, README) | **livree** |
 | 2 | Base de donnees, fonctions, RLS, tests metier | **livree** |
 | 3 | Authentification complete, comptes, permissions, bootstrap proprietaire | **livree** |
-| 4 | Catalogue : categories, produits, prix, CMP, historique | API et ecran dedie |
-| 5 | Fournisseurs et approvisionnements | API et regles testees ; interface generique a remplacer |
-| 6 | Stocks, inventaires, ajustements, alertes | API et regles testees ; interface generique a remplacer |
-| 7 | Caisse, reductions, anti-perte, recus | API et regles testees ; interface de caisse a finaliser |
-| 8 | Paiements et references Mobile Money | API et regles testees ; interface a finaliser |
-| 9 | Annulations | API et regles testees ; interface a finaliser |
-| 10 | Depenses et justificatifs | API et regles testees ; interface a finaliser |
-| 11 | Tableau de bord, rapports, exports | API, indicateurs et export CSV ; visualisations et PDF/Excel a faire |
+| 4 | Catalogue : categories, produits, prix, CMP, historique | API et ecrans dedies |
+| 5 | Fournisseurs et approvisionnements | Formulaires et validation d'achat ; recherche/modification fournisseurs a ajouter |
+| 6 | Stocks, inventaires, ajustements, alertes | Ajustements et saisie/validation d'inventaire ; historique filtrable a ajouter |
+| 7 | Caisse, reductions, anti-perte, recus | Saisie de vente et reductions par ligne ; paiements mixtes et recus a finaliser |
+| 8 | Paiements et references Mobile Money | Paiement simple et reference ; paiement mixte et verification operateur hors v1 |
+| 9 | Annulations | Demande, approbation et rejet ; filtres de suivi a ajouter |
+| 10 | Depenses et justificatifs | Creation, validation et rejet ; televersement des pieces a ajouter |
+| 11 | Tableau de bord, rapports, exports | Indicateurs et export CSV ; graphiques et PDF/Excel a faire |
 | 12 | IndexedDB et synchronisation hors ligne | partiel : file locale de ventes/approvisionnements/depenses, revalidation serveur ; quotas et resolution complete a faire |
 | 13 | Tests, securite, documentation, deploiement | tests unitaires/integration presents ; revue de production et deploiement a faire |
 
-Les ecrans generiques demandent encore des donnees JSON brutes et ne constituent pas une interface de caisse ou de gestion utilisable par les employes.
+Les operations principales sont maintenant accessibles par des formulaires structures. Les parcours avances restants sont listes dans le tableau et doivent etre valides avant une mise en production.
 
 ---
 
@@ -154,7 +185,8 @@ Voir `documentation/securite.md` et `documentation/synchronisation.md`.
 
 ## 6. Sauvegarde et restauration
 
-Supabase : sauvegardes automatiques quotidiennes (offre payante) + export manuel.
+Supabase : verifier la politique de sauvegarde incluse dans le plan du projet et
+conserver aussi des exports manuels testes.
 
 ```bash
 # Sauvegarde complete (structure + donnees)

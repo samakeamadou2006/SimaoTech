@@ -114,8 +114,13 @@ Versions verrouillees dans `package.json` (Node >= 20).
 Les routes d'authentification, utilisateurs, catalogue et operations metier sont
 presentees dans [api.md](./api.md). Le catalogue retourne par `GET /api` est
 maintenant aligne sur les routes enregistrees. La presence d'une route ne signifie
-pas que l'ecran correspondant est finalise : plusieurs modules utilisent encore
-un formulaire generique et les parcours de caisse doivent etre ameliores.
+pas que l'ecran correspondant est finalise : les formulaires de creation et de
+validation des operations principales existent, mais la recherche, la modification,
+les paiements mixtes, les recus et les pieces jointes restent a completer.
+
+Les listes necessaires aux formulaires hors ligne sont conservees temporairement
+dans la session du compte courant (24 heures maximum) ; le cache ne reserve pas
+de stock et n'evite pas les erreurs de synchronisation.
 
 Le backend fournit notamment les validations de ventes, paiements, stocks,
 approvisionnements, depenses, rapports et permissions. Les exports PDF/Excel ne
